@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - FMP</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="painel-header">
+        <h1>ADMINISTRAÇÃO DE TURMAS</h1>
+    </header>
+
+    <div class="admin-container">
+        <div class="logo-container">
+            <img src="image.png" alt="Logo FMP - Faculdade Municipal de Palhoça" class="logo-fmp">
+        </div>
+        <form id="form-turma" class="form-turma">
+            <div class="form-group">
+                <label for="tipo-sala">Tipo de Sala:</label>
+                <select id="tipo-sala" required>
+                    <option value="">Selecione...</option>
+                    <option value="laboratorio">Laboratório</option>
+                    <option value="auditorio">Auditório</option>
+                    <option value="multiuso">Sala Multiuso</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="grupo-numero-sala" style="display:none;">
+                <label for="sala">Número do Laboratório:</label>
+                <select id="sala" required>
+                    <!-- Opções serão preenchidas via JavaScript -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="horario">Horário:</label>
+                <select id="horario" required>
+                    <option value="">Selecione...</option>
+                    <option value="08:00 - 09:30">08:00 - 09:30</option>
+                    <option value="09:40 - 11:10">09:40 - 11:10</option>
+                    <option value="ambos">Ambos os horários</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="turma">Turma/Evento:</label>
+                <input type="text" id="turma" required placeholder="Ex.: Eng. Software - Turma A ou Nome do Evento">
+            </div>
+            
+            <div class="form-group">
+                <label for="professor">Professor/Palestrante:</label>
+                <input type="text" id="professor" required placeholder="Nome do professor/palestrante">
+            </div>
+            
+            <div class="form-group" id="grupo-tema" style="display:none;">
+                <label for="tema">Tema da Palestra:</label>
+                <input type="text" id="tema" placeholder="Tema da palestra (opcional)">
+            </div>
+            
+            <div class="form-botoes">
+                <button type="submit" class="botao-adicionar">Adicionar Turma/Evento</button>
+                <button type="button" id="limpar-tudo" class="botao-limpar">Limpar Tudo</button>
+            </div>
+        </form>
+        
+        <div class="lista-turmas">
+            <h2>Turmas/Eventos Cadastrados</h2>
+            <div id="turmas-cadastradas" class="turmas-lista">
+                <!-- Turmas serão carregadas aqui via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="painel-footer">
+        <a href="index.html" class="botao-admin">Voltar ao Painel</a>
+        <div class="atualizacao">Sistema de Gerenciamento FMP</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

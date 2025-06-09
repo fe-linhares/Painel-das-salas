@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel Universitário - FMP</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <header class="painel-header">
+      <h1>Painel das turmas</h1>
+    <div class="relogio" id="relogio"></div>
+  </header>
+
+  <main class="container">
+     <div class="logo-container">
+      <img src="image.png" alt="Logo FMP - Faculdade Municipal de Palhoça" class="logo-fmp"/>
+    </div>
+    
+    <div class="salas-container">
+      <div class="categoria-salas">
+        <h2>Laboratórios</h2>
+        <div class="boxes-container" id="laboratorios">
+          <!-- Turmas serão carregadas aqui via JavaScript -->
+        </div>
+      </div>
+      
+      <div class="categoria-salas">
+        <h2>Auditório</h2>
+        <div class="boxes-container" id="auditorio">
+          <!-- Eventos serão carregados aqui via JavaScript -->
+        </div>
+      </div>
+      
+      <div class="categoria-salas">
+        <h2>Sala Multiuso</h2>
+        <div class="boxes-container" id="multiuso">
+          <!-- Atividades serão carregadas aqui via JavaScript -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="painel-footer">
+    <a href="admin.html" class="botao-admin">Acesso Administrativo</a>
+    <div class="atualizacao">Última atualização: <span id="hora-atualizacao"></span></div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
