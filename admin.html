@@ -9,7 +9,13 @@
 </head>
 <body>
     <header class="painel-header">
+      <div class="header-content">
         <h1>ADMINISTRAÇÃO DE TURMAS</h1>
+        <div class="relogio-fixo">
+          <div id="data-atual"></div>
+          <div id="relogio"></div>
+        </div>
+      </div>
     </header>
 
     <div class="admin-container">
@@ -35,13 +41,20 @@
             </div>
             
             <div class="form-group">
-                <label for="horario">Horário:</label>
-                <select id="horario" required>
+                <label for="periodo">Período:</label>
+                <select id="periodo" required>
                     <option value="">Selecione...</option>
-                    <option value="08:00 - 09:30">08:00 - 09:30</option>
-                    <option value="09:40 - 11:10">09:40 - 11:10</option>
-                    <option value="ambos">Ambos os horários</option>
+                    <option value="matutino">Matutino</option>
+                    <option value="vespertino">Vespertino</option>
+                    <option value="noturno">Noturno</option>
                 </select>
+            </div>
+            
+            <div class="form-group" id="grupo-horarios" style="display:none;">
+                <label>Horários:</label>
+                <div id="horarios-disponiveis" class="horarios-checkbox">
+                    <!-- Horários serão carregados via JavaScript -->
+                </div>
             </div>
             
             <div class="form-group">
