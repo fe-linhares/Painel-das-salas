@@ -1,13 +1,38 @@
 const STORAGE_KEY = 'fmp_turmas';
 
+// Horários disponíveis por período
+const HORARIOS = {
+  matutino: [
+    '08:00 - 09:30',
+    '09:40 - 11:10',
+    '11:20 - 12:50'
+  ],
+  vespertino: [
+    '13:00 - 15:00',
+    '15:10 - 16:40',
+    '16:50 - 18:30'
+  ],
+  noturno: [
+    '19:00 - 20:30',
+    '20:40 - 22:00'
+  ]
+};
+
 // Funções para a página index.html
 if (document.getElementById('laboratorios')) {
   const relogio = document.getElementById('relogio');
+  const dataAtual = document.getElementById('data-atual');
   const horaAtualizacao = document.getElementById('hora-atualizacao');
   
   function atualizarRelogio() {
     const agora = new Date();
     relogio.textContent = agora.toLocaleTimeString();
+    dataAtual.textContent = agora.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
   }
   
   function atualizarHoraAtualizacao() {
@@ -43,7 +68,7 @@ if (document.getElementById('laboratorios')) {
           <h3>${turma.sala}</h3>
           <p><strong>Turma:</strong> ${turma.turma}</p>
           <p><strong>Professor:</strong> ${turma.professor}</p>
-          <p><strong>Horário:</strong> ${turma.horario}</p>
+          <p><strong>Horário:</strong> ${turma.horario.join(', ')}</p>
         `;
         laboratoriosContainer.appendChild(box);
       } 
@@ -53,7 +78,7 @@ if (document.getElementById('laboratorios')) {
           <p><strong>Evento:</strong> ${turma.turma}</p>
           <p><strong>Palestrante:</strong> ${turma.professor}</p>
           ${turma.tema ? `<p><strong>Tema:</strong> ${turma.tema}</p>` : ''}
-          <p><strong>Horário:</strong> ${turma.horario}</p>
+          <p><strong>Horário:</strong> ${turma.horario.join(', ')}</p>
         `;
         auditorioContainer.appendChild(box);
       } 
@@ -62,7 +87,7 @@ if (document.getElementById('laboratorios')) {
           <h3>${turma.sala}</h3>
           <p><strong>Atividade:</strong> ${turma.turma}</p>
           <p><strong>Responsável:</strong> ${turma.professor}</p>
-          <p><strong>Horário:</strong> ${turma.horario}</p>
+          <p><strong>Horário:</strong> ${turma.horario.join(', ')}</p>
         `;
         multiusoContainer.appendChild(box);
       }
@@ -88,14 +113,33 @@ if (document.getElementById('form-turma')) {
   const tipoSalaSelect = document.getElementById('tipo-sala');
   const grupoNumeroSala = document.getElementById('grupo-numero-sala');
   const grupoTema = document.getElementById('grupo-tema');
+  const grupoHorarios = document.getElementById('grupo-horarios');
+  const periodoSelect = document.getElementById('periodo');
   const salaSelect = document.getElementById('sala');
+  const horariosDisponiveis = document.getElementById('horarios-disponiveis');
+  const relogio = document.getElementById('relogio');
+  const dataAtual = document.getElementById('data-atual');
+  
+  function atualizarRelogio() {
+    const agora = new Date();
+    relogio.textContent = agora.toLocaleTimeString();
+    dataAtual.textContent = agora.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  }
   
   // Configurar eventos
   tipoSalaSelect.addEventListener('change', atualizarCamposSala);
+  periodoSelect.addEventListener('change', atualizarHorariosDisponiveis);
   formTurma.addEventListener('submit', adicionarTurma);
   botaoLimpar.addEventListener('click', limparTudo);
   
-  // Carregar turmas ao iniciar
+  // Inicialização
+  atualizarRelogio();
+  setInterval(atualizarRelogio, 1000);
   carregarTurmasAdmin();
   
   function atualizarCamposSala() {
@@ -128,18 +172,45 @@ if (document.getElementById('form-turma')) {
     }
   }
   
+  function atualizarHorariosDisponiveis() {
+    const periodo = periodoSelect.value;
+    
+    if (!periodo) {
+      grupoHorarios.style.display = 'none';
+      return;
+    }
+    
+    grupoHorarios.style.display = 'block';
+    horariosDisponiveis.innerHTML = '';
+    
+    HORARIOS[periodo].forEach(horario => {
+      const div = document.createElement('div');
+      div.className = 'horario-option';
+      div.innerHTML = `
+        <input type="checkbox" id="horario-${horario}" value="${horario}">
+        <label for="horario-${horario}">${horario}</label>
+      `;
+      horariosDisponiveis.appendChild(div);
+    });
+  }
+  
   function adicionarTurma(e) {
     e.preventDefault();
     
     const tipoSala = tipoSalaSelect.value;
-    const sala = salaSelect.value;
-    const horario = document.getElementById('horario').value;
+    const sala = tipoSala === 'laboratorio' ? salaSelect.value : 
+                 tipoSala === 'auditorio' ? 'Auditório Principal' : 'Sala Multiuso';
+    const periodo = periodoSelect.value;
     const turma = document.getElementById('turma').value.trim();
     const professor = document.getElementById('professor').value.trim();
     const tema = tipoSala === 'auditorio' ? document.getElementById('tema').value.trim() : '';
     
-    if (!sala || !turma || !professor || !horario) {
-      alert('Por favor, preencha todos os campos obrigatórios!');
+    // Obter horários selecionados
+    const checkboxes = horariosDisponiveis.querySelectorAll('input[type="checkbox"]:checked');
+    const horarios = Array.from(checkboxes).map(cb => cb.value);
+    
+    if (!sala || !turma || !professor || !periodo || horarios.length === 0) {
+      alert('Por favor, preencha todos os campos obrigatórios e selecione pelo menos um horário!');
       return;
     }
     
@@ -148,7 +219,8 @@ if (document.getElementById('form-turma')) {
       sala, 
       turma, 
       professor,
-      horario,
+      periodo,
+      horario: horarios,
       tema
     };
     
@@ -157,6 +229,9 @@ if (document.getElementById('form-turma')) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(turmas));
     
     formTurma.reset();
+    grupoHorarios.style.display = 'none';
+    grupoNumeroSala.style.display = 'none';
+    grupoTema.style.display = 'none';
     carregarTurmasAdmin();
     alert('Turma/Evento cadastrado com sucesso!');
   }
@@ -175,7 +250,7 @@ if (document.getElementById('form-turma')) {
       div.className = 'turma-item';
       div.innerHTML = `
         <div class="turma-info">
-          <strong>${turma.sala}</strong>: ${turma.turma} - ${turma.professor} (${turma.horario})
+          <strong>${turma.sala}</strong>: ${turma.turma} - ${turma.professor} (${turma.horario.join(', ')})
           ${turma.tema ? `<br><em>Tema: ${turma.tema}</em>` : ''}
         </div>
         <div class="turma-acoes">
